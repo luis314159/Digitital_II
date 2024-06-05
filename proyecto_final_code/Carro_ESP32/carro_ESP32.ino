@@ -1,5 +1,5 @@
 #include <BluetoothSerial.h> 
-BluetoothSerial BT;    // Definimos los pines RX y TX del Arduino conectados al Bluetooth
+BluetoothSerial BT;
  
 int motora1 = 23;
 int motora2 = 22;
@@ -17,10 +17,17 @@ float mapeo2;
 int x;
 int y;
 string data;
+//##########################################
+//               Pin                      //
+//########################################## 
+
+int triggerPin = 10; //Cambiar valor
+int echoPin = 11;  //Cambiar valor
 
 void setup() {
-  // put your setup code here, to run once:
     BT.begin("carro");
+    pinMode(triggerPin, OUTPUT);
+    pinMode(echoPin, INPUT);
     pinMode(motora1, OUTPUT);
     pinMode(motora2, OUTPUT);
     pinMode(motorb1, OUTPUT);
@@ -31,11 +38,9 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
     if(BT.available())    // Si llega un dato por el puerto BT se envía al monitor serial
   {
     data = BT.read();
-    //separar datos TODO
    splitData(data, x,y);
     fun_h(x,y);
   }
@@ -138,7 +143,9 @@ void fun_h(int x, int y){
       }
     }
 }
-
+//###########################################################
+//               Función split string                      //
+//###########################################################
 void splitData(String data, int& x, int& y) {
   // Encontrar la posición de la coma
   int commaIndex = data.indexOf(',');
@@ -152,7 +159,10 @@ void splitData(String data, int& x, int& y) {
   y = yStr.toInt();
 }
 
-float medirDistancia(int triggerPin, int echoPin) {
+//###########################################################
+//                   Función sensor                        //
+//###########################################################
+float readUltrasonic(int triggerPin, int echoPin) {
   digitalWrite(triggerPin, HIGH); // Genera el pulso a enviar
   delayMicroseconds(10); // Espera 10 microsegundos
   digitalWrite(triggerPin, LOW); // Termina el pulso
